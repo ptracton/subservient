@@ -1,0 +1,97 @@
+CAPI=2:
+
+name : ::subservient:0.1.0
+
+filesets:
+  core:
+    files:
+      - rtl/subservient_rf_ram_if.v
+      - rtl/subservient_ram.v
+      - rtl/subservient_debug_switch.v
+      - rtl/subservient_core.v
+    file_type : verilogSource
+    depend : [serving]
+
+  mem_files:
+    files:
+      - sw/blinky.hex : {copyto : blinky.hex}
+      - sw/hello.hex  : {copyto : hello.hex}
+    file_type : user
+
+  openlane:
+    files:
+      - data/params.tcl : {file_type : tclSource}
+  tb:
+    files:
+      - tb/subservient_sim.v
+      - "!tool_verilator? (tb/uart_decoder.v)"
+      - "!tool_verilator? (tb/subservient_tb.v)"
+      - "tool_verilator? (tb/subservient_tb.cpp)" : {file_type : cppSource}
+    file_type : verilogSource
+    depend : [sky130_sram_macros, vlog_tb_utils]
+
+  soc:
+    files:
+      - rtl/subservient_gpio.v
+      - rtl/subservient.v
+    file_type : verilogSource
+
+targets:
+  default:
+    filesets : [soc]
+
+  lint:
+    default_tool : verilator
+    filesets : [core, soc]
+    tools:
+      verilator:
+        mode : lint-only
+    toplevel : subservient
+
+  sky130:
+    default_tool: openlane
+    filesets : [core, soc, openlane]
+    parameters :
+      - firmware
+      - memsize
+    tools:
+      openlane:
+        interactive_name : interactive.tcl
+    toplevel : subservient
+
+  sim: &sim
+    default_tool: icarus
+    filesets : [mem_files, core, soc, tb]
+    parameters :
+      - firmware
+      - memsize
+      - "!tool_verilator? (uart_baudrate)"
+    tools:
+      verilator:
+        verilator_options : [--trace]
+    toplevel : ["tool_verilator? (subservient_sim)", "!tool_verilator? (subservient_tb)"]
+
+  sim_hello:
+    <<: *sim
+    default_tool: icarus
+    parameters :
+      - firmware=hello.hex
+      - memsize=1024
+      - uart_baudrate=115200
+    
+parameters:
+  firmware:
+    datatype : file
+    description : Preload RAM with a hex file at runtime (overrides memfile)
+    paramtype : plusarg
+
+  memsize:
+    datatype    : int
+    default     : 8192
+    description : Memory size in bytes for RAM (default 8kiB)
+    paramtype   : vlogparam
+
+  uart_baudrate:
+    datatype : int
+    description : Treat q output as an UART with the specified baudrate (0 or omitted parameter disables UART decoding)
+    paramtype : plusarg
