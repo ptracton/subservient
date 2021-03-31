@@ -19,22 +19,22 @@
 
 `default_nettype none
 module subservient
+  #(//Memory parameters
+    parameter memsize = 512,
+    parameter aw    = $clog2(memsize))
   (
-   input wire 	     i_clk,
-   input wire 	     i_rst,
+   input wire 		i_clk,
+   input wire 		i_rst,
 
-   output wire [9:0] o_sram_waddr,
-   output wire [7:0] o_sram_wdata,
-   output wire 	     o_sram_wen,
-   output wire [9:0] o_sram_raddr,
-   input wire [7:0]  i_sram_rdata,
+   output wire [aw-1:0] o_sram_waddr,
+   output wire [7:0] 	o_sram_wdata,
+   output wire 		o_sram_wen,
+   output wire [aw-1:0] o_sram_raddr,
+   input wire [7:0] 	i_sram_rdata,
 
-   output wire 	     o_gpio);
+   output wire 		o_gpio);
 
-   parameter memsize = 512;
    parameter WITH_CSR = 1;
-
-   localparam aw = $clog2(memsize);
 
    wire [31:0] 	wb_core_adr;
    wire [31:0] 	wb_core_dat;
@@ -62,6 +62,7 @@ module subservient
      (// Wishbone interface
       .i_clk (i_clk),
       .i_rst (i_rst),
+      .i_timer_irq (1'b0),
 
       .o_sram_waddr (o_sram_waddr),
       .o_sram_wdata (o_sram_wdata),
@@ -69,7 +70,7 @@ module subservient
       .o_sram_raddr (o_sram_raddr),
       .i_sram_rdata (i_sram_rdata),
 
-      .o_wb_adr (wb_core_adr[$clog2(memsize)-1:2]),
+      .o_wb_adr (wb_core_adr),
       .o_wb_dat (wb_core_dat),
       .o_wb_sel (wb_core_sel),
       .o_wb_we  (wb_core_we) ,

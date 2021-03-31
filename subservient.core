@@ -5,10 +5,8 @@ name : ::subservient:0.1.0
 filesets:
   core:
     files:
-      - serving/serving_arbiter.v
-      - serving/serving_mux.v
-      - serving/subservient_ram.v
-      - serving/subservient_core.v
+      - rtl/subservient_ram.v
+      - rtl/subservient_core.v
     file_type : verilogSource
     depend : [serving]
 
@@ -35,6 +33,7 @@ filesets:
   soc:
     files:
       - rtl/subservient_gpio.v
+      - rtl/subservient.v
     file_type : verilogSource
 
   cyc1000:
@@ -238,11 +237,11 @@ targets:
 
   lint:
     default_tool : verilator
-    filesets : [soc]
+    filesets : [core, soc]
     tools:
       verilator:
         mode : lint-only
-    toplevel : servant
+    toplevel : subservient
 
   nexys_a7:
     default_tool: vivado
@@ -301,10 +300,8 @@ targets:
 
   sim:
     default_tool: icarus
-    filesets : [soc, servant_tb]
+    filesets : [core, soc, servant_tb]
     parameters :
-      - RISCV_FORMAL
-      - SERV_CLEAR_RAM=true
       - firmware
       - memsize
     toplevel : servant_tb

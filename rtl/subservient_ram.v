@@ -23,25 +23,25 @@ module subservient_ram
     parameter depth = 256,
     parameter aw    = $clog2(depth))
    (input wire 		i_clk,
-    input wire [aw-1:0] i_waddr,
-    input wire [7:0] 	i_wdata,
-    input wire 		i_wen,
-    input wire [aw-1:0] i_raddr,
-    output wire [7:0] 	o_rdata,
+    input wire [aw-1:0]  i_waddr,
+    input wire [7:0] 	 i_wdata,
+    input wire 		 i_wen,
+    input wire [aw-1:0]  i_raddr,
+    output wire [7:0] 	 o_rdata,
 
-    output wire [9:0] 	o_sram_waddr,
-    output wire [7:0] 	o_sram_wdata,
-    output wire 	o_sram_wen,
-    output wire [9:0] 	o_sram_raddr,
-    input wire [7:0] 	i_sram_rdata,
+    output wire [aw-1:0] o_sram_waddr,
+    output wire [7:0] 	 o_sram_wdata,
+    output wire 	 o_sram_wen,
+    output wire [aw-1:0] o_sram_raddr,
+    input wire [7:0] 	 i_sram_rdata,
    
-    input wire [aw-1:2] i_wb_adr,
-    input wire [31:0] 	i_wb_dat,
-    input wire [3:0] 	i_wb_sel,
-    input wire 		i_wb_we,
-    input wire 		i_wb_stb,
-    output wire [31:0] 	o_wb_rdt,
-    output reg 		o_wb_ack);
+    input wire [aw-1:2]  i_wb_adr,
+    input wire [31:0] 	 i_wb_dat,
+    input wire [3:0] 	 i_wb_sel,
+    input wire 		 i_wb_we,
+    input wire 		 i_wb_stb,
+    output wire [31:0] 	 o_wb_rdt,
+    output reg 		 o_wb_ack);
 
    reg [1:0] 		bsel;
 
@@ -51,7 +51,7 @@ module subservient_ram
 
    assign o_sram_waddr = wb_en ? {i_wb_adr[aw-1:2],bsel} : i_waddr;
    assign o_sram_wdata = wb_en ? i_wb_dat[bsel*8+:8]     : i_wdata;
-   assign o_sram_we    = wb_en ? wb_we : i_wen;
+   assign o_sram_wen   = wb_en ? wb_we : i_wen;
    assign o_sram_raddr = wb_en ? {i_wb_adr[aw-1:2],bsel} : i_raddr;
 
    reg [23:0] 		wb_rdt;

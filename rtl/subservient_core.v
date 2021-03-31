@@ -19,33 +19,33 @@
 
 `default_nettype none
 module subservient_core
+  #(//Memory parameters
+    parameter memsize = 512,
+    parameter aw    = $clog2(memsize))
   (
-   input wire 	      i_clk,
-   input wire 	      i_rst,
-   input wire 	      i_timer_irq,
+   input wire 		i_clk,
+   input wire 		i_rst,
+   input wire 		i_timer_irq,
 
-   output wire [9:0]  o_sram_waddr,
-   output wire [7:0]  o_sram_wdata,
-   output wire 	      o_sram_wen,
-   output wire [9:0]  o_sram_raddr,
-   input wire [7:0]   i_sram_rdata,
+   output wire [aw-1:0] o_sram_waddr,
+   output wire [7:0] 	o_sram_wdata,
+   output wire 		o_sram_wen,
+   output wire [aw-1:0] o_sram_raddr,
+   input wire [7:0] 	i_sram_rdata,
    
-   output wire [31:0] o_wb_adr,
-   output wire [31:0] o_wb_dat,
-   output wire [3:0]  o_wb_sel,
-   output wire 	      o_wb_we ,
-   output wire 	      o_wb_stb,
-   input wire [31:0]  i_wb_rdt,
-   input wire 	      i_wb_ack);
+   output wire [31:0] 	o_wb_adr,
+   output wire [31:0] 	o_wb_dat,
+   output wire [3:0] 	o_wb_sel,
+   output wire 		o_wb_we ,
+   output wire 		o_wb_stb,
+   input wire [31:0] 	i_wb_rdt,
+   input wire 		i_wb_ack);
 
-   parameter memsize = 512;
    parameter RESET_STRATEGY = "MINI";
    parameter WITH_CSR = 1;
    localparam regs = 32+WITH_CSR*4;
 
    localparam rf_width = 8;
-
-   localparam aw = $clog2(memsize);
 
    wire [31:0] 	wb_ibus_adr;
    wire 	wb_ibus_stb;
