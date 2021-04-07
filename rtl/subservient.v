@@ -34,7 +34,7 @@ module subservient
 
    output wire 		o_gpio);
 
-   parameter WITH_CSR = 1;
+   parameter WITH_CSR = 0;
 
    wire [31:0] 	wb_core_adr;
    wire [31:0] 	wb_core_dat;
@@ -45,14 +45,16 @@ module subservient
    wire 	wb_core_ack;
 
    wire 	wb_gpio_rdt;
-   assign wb_core_rdt[0] = wb_gpio_rdt;
+   assign wb_core_rdt = {30'd0, wb_gpio_rdt};
 
    subservient_gpio gpio
      (.i_wb_clk (i_clk),
+      .i_wb_rst (i_rst),
       .i_wb_dat (wb_core_dat[0]),
       .i_wb_we  (wb_core_we),
       .i_wb_stb (wb_core_stb),
       .o_wb_rdt (wb_gpio_rdt),
+      .o_wb_ack (wb_core_ack),
       .o_gpio   (o_gpio));
 
    subservient_core

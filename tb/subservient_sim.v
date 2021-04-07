@@ -2,13 +2,13 @@
 module subservient_sim
   #(//Memory parameters
     parameter memsize = 512,
-    parameter aw    = $clog2(memsize))
-  (input wire  i_clk,
-   input wire  i_rst,
-   output wire q);
+    parameter aw    = $clog2(memsize),
+    parameter memfile = "",
+    parameter with_csr = 1)
+   (input wire  i_clk,
+    input wire 	i_rst,
+    output wire o_gpio);
 
-   parameter memfile = "";
-   parameter with_csr = 1;
 
    reg [1023:0] firmware_file;
    initial
@@ -21,7 +21,7 @@ module subservient_sim
    wire [7:0] 	 sram_wdata;
    wire 	 sram_wen;
    wire [aw-1:0] sram_raddr;
-   wire [7:0] 	 sram_rdata;
+   reg [7:0] 	 sram_rdata;
 
    reg [7:0] 	 mem [0:memsize-1];
 
@@ -32,9 +32,8 @@ module subservient_sim
    end
 
    subservient
-     #(.memfile  (memfile),
-       .memsize  (memsize),
-       .with_csr (with_csr))
+     #(.memsize  (memsize),
+       .WITH_CSR (with_csr))
    dut
      (// Clock & reset
       .i_clk (i_clk),

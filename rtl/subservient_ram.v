@@ -22,7 +22,8 @@ module subservient_ram
   #(//Memory parameters
     parameter depth = 256,
     parameter aw    = $clog2(depth))
-   (input wire 		i_clk,
+   (input wire 		 i_clk,
+    input wire 		 i_rst,
     input wire [aw-1:0]  i_waddr,
     input wire [7:0] 	 i_wdata,
     input wire 		 i_wen,
@@ -34,7 +35,7 @@ module subservient_ram
     output wire 	 o_sram_wen,
     output wire [aw-1:0] o_sram_raddr,
     input wire [7:0] 	 i_sram_rdata,
-   
+
     input wire [aw-1:2]  i_wb_adr,
     input wire [31:0] 	 i_wb_dat,
     input wire [3:0] 	 i_wb_sel,
@@ -57,13 +58,20 @@ module subservient_ram
    reg [23:0] 		wb_rdt;
    assign o_wb_rdt = {i_sram_rdata, wb_rdt};
 
+   reg 			regzero;
    always @(posedge i_clk) begin
       if (wb_en) bsel <= bsel + 2'd1;
       o_wb_ack <= wb_en & &bsel;
       if (bsel == 2'b01) wb_rdt[7:0]   <= i_sram_rdata;
       if (bsel == 2'b10) wb_rdt[15:8]  <= i_sram_rdata;
       if (bsel == 2'b11) wb_rdt[23:16] <= i_sram_rdata;
+      if (i_rst) begin
+	 bsel <= 2'd0;
+	 o_wb_ack <= 1'b0;
+      end
+      regzero <= &i_raddr[aw-1:2];
    end
 
-   assign o_rdata = i_sram_rdata;
+   assign o_rdata = regzero ? 8'd0 : i_sram_rdata;
+
 endmodule

@@ -21,6 +21,8 @@
 module subservient_core
   #(//Memory parameters
     parameter memsize = 512,
+    parameter RESET_STRATEGY = "MINI",
+    parameter WITH_CSR = 1,
     parameter aw    = $clog2(memsize))
   (
    input wire 		i_clk,
@@ -41,8 +43,6 @@ module subservient_core
    input wire [31:0] 	i_wb_rdt,
    input wire 		i_wb_ack);
 
-   parameter RESET_STRATEGY = "MINI";
-   parameter WITH_CSR = 1;
    localparam regs = 32+WITH_CSR*4;
 
    localparam rf_width = 8;
@@ -141,6 +141,7 @@ module subservient_core
    ram
      (// Wishbone interface
       .i_clk (i_clk),
+      .i_rst (i_rst),
       .i_waddr  (rf_waddr),
       .i_wdata  (wdata),
       .i_wen    (wen),
