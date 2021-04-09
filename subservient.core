@@ -16,6 +16,9 @@ filesets:
       - sw/zephyr_hello.hex : {copyto : zephyr_hello.hex}
     file_type : user
 
+  openlane:
+    files:
+      - data/params.tcl : {file_type : tclSource}
   tb:
     files:
       - tb/subservient_sim.v
@@ -51,6 +54,18 @@ targets:
       vivado: {part : xc7a100tcsg324-1}
     toplevel : servix
 
+  openlane:
+    default_tool: openlane
+    filesets : [core, soc, openlane]
+    parameters :
+      - firmware
+      - memsize
+    tools:
+      openlane:
+        interactive_name : interactive.tcl
+#    toplevel : serv_rf_ram_if
+    toplevel : subservient
+
   sim:
     default_tool: verilator
     filesets : [core, soc, tb]
@@ -61,65 +76,6 @@ targets:
       verilator:
         verilator_options : [--trace]
     toplevel : ["tool_verilator? (subservient_sim)", "!tool_verilator? (subservient_tb)"]
-
-  ulx3s_85:
-    default_tool: diamond
-    description : ULX3S 85k version
-    filesets : [mem_files, soc, ulx3s]
-    parameters : [memfile, memsize]
-    tools:
-      diamond:
-        part : LFE5U-85F-6BG381C
-      trellis:
-        nextpnr_options : [--package, CABGA381, --85k]
-    toplevel: servant_ecp5
-
-  upduino2:
-    default_tool : icestorm
-    filesets : [mem_files, soc, upduino2]
-    parameters : [memfile, memsize]
-    tools:
-      icestorm:
-        nextpnr_options: [--package, sg48, --up5k, --freq, 24]
-        pnr: next
-    toplevel : servant_upduino2
-
-  verilator_tb:
-    default_tool: verilator
-    filesets : [soc, verilator_tb]
-    parameters :
-      - RISCV_FORMAL
-      - firmware
-      - memsize
-      - signature
-      - timeout
-      - uart_baudrate
-      - vcd
-      - vcd_start
-    tools:
-      verilator:
-        verilator_options : [--trace]
-    toplevel : servant_sim
-
-  zcu106:
-    default_tool: vivado
-    description : Zynq UltraScale+ MPSoC ZCU106 Evaluation Kit
-    filesets : [mem_files, soc, zcu106]
-    parameters : [memfile, memsize]
-    tools:
-      vivado: {part : xczu7ev-ffvc1156-2-e}
-    toplevel : servus
-
-  icestick:
-    default_tool : icestorm
-    filesets : [mem_files, soc, service, icestick]
-    generate: [icestick_pll]
-    parameters : [memfile=blinky.hex, memsize=7168, PLL=ICE40_CORE]
-    tools:
-      icestorm:
-        nextpnr_options : [--hx1k, --package, tq144, --freq, 32]
-        pnr: next
-    toplevel : service
 
 parameters:
   PLL:
