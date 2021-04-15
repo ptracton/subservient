@@ -19,6 +19,18 @@ The top-level of Subservient consists of the subservient_core component which co
 
 Subservient core contains SERV and the necessary components to use a single SRAM for SERV's register file, data and instruction memories. It also routes all memory accesses >=0x40000000 to the wishbone peripheral interface. In the debug mode, the debug interface takes over the accesses from SERV. This allows an external wishbone master to access all subservient peripherals as well as programming the SRAM through this interface.
 
+### Testbench
+
+![Core](doc/subservient_tb.png)
+
+Subservient comes with a simple testbench that allows running programs on the simulated SoC and monitor its outputs either as a GPIO or as a UART. The testbench flow is as follows:
+
+1. Subservient is started up in debug mode by asserting debug_mode. This prevents the CPU from accessing the SRAM until we are ready for that.
+2. Reset is released
+3. The SRAM is written through the debug interface from a user-specified file in the verilog hex format.
+4. Debug mode is turned off
+5. CPU starts executing from the program written to SRAM
+
 TODO:
 - [ ] Test on FPGA
 - [ ] Add OpenRAM

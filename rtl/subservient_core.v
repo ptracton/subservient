@@ -143,7 +143,7 @@ module subservient_core
       .o_wb_cpu_dbus_ack (wb_dmem_ack),
 
       .i_wb_cpu_ibus_adr (wb_ibus_adr),
-      .i_wb_cpu_ibus_stb (wb_ibus_stb),
+      .i_wb_cpu_ibus_stb (wb_ibus_stb & !i_debug_mode),
       .o_wb_cpu_ibus_rdt (wb_ibus_rdt),
       .o_wb_cpu_ibus_ack (wb_ibus_ack),
 

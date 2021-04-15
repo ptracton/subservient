@@ -27,7 +27,7 @@ filesets:
       - "!tool_verilator? (tb/subservient_tb.v)"
       - "tool_verilator? (tb/subservient_tb.cpp)" : {file_type : cppSource}
     file_type : verilogSource
-    depend : [vlog_tb_utils]
+    depend : [sky130_sram_macros, vlog_tb_utils]
 
   soc:
     files:
