@@ -110,8 +110,10 @@ module subservient_tb;
 
    //Adapt the 8-bit SRAM interface from subservient to the 32-bit OpenRAM instance
    reg [1:0] sram_bsel;
-   always @(posedge clk)
-     sram_bsel <= sram_raddr[1:0];
+   always @(posedge clk) begin
+      sram_bsel  <= sram_raddr[1:0];
+      //sram_rdata <= dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
+   end
 
    wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
    wire [7:0] waddr0 = sram_waddr[9:2]; //256 32-bit words = 1kB

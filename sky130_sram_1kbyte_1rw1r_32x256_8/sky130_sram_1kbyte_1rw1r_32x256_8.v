@@ -64,7 +64,7 @@ module sky130_sram_1kbyte_1rw1r_32x256_8(
     addr1_reg = addr1;
     if (!csb0 && !web0 && !csb1 && (addr0 == addr1))
          $display($time," WARNING: Writing and reading addr0=%b and addr1=%b simultaneously!",addr0,addr1);
-    dout1 = 32'bx;
+    dout1 = #1 32'bx;
     if ( !csb1_reg  & VERBOSE) 
       $display($time," Reading %m addr1=%b dout1=%b",addr1_reg,mem[addr1_reg]);
   end
