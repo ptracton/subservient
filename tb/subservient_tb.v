@@ -15,7 +15,17 @@ module subservient_tb;
 
    vlog_tb_utils vtu();
 
-   uart_decoder #(57600) uart_decoder (q);
+   integer baudrate = 0;
+   initial begin
+      if ($value$plusargs("uart_baudrate=%d", baudrate))
+	$display("UART decoder using baud rate %d", baudrate);
+      else
+	forever
+	  @(q) $display("%0t output o_gpio is %s", $time, q ? "ON" : "OFF");
+
+   end
+
+   uart_decoder #(57600) uart_decoder (q & |baudrate);
 
    subservient_sim
      #(.memfile  (memfile),

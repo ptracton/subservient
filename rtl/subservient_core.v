@@ -29,12 +29,24 @@ module subservient_core
    input wire 		i_rst,
    input wire 		i_timer_irq,
 
+   //SRAM interface
    output wire [aw-1:0] o_sram_waddr,
    output wire [7:0] 	o_sram_wdata,
    output wire 		o_sram_wen,
    output wire [aw-1:0] o_sram_raddr,
    input wire [7:0] 	i_sram_rdata,
-   
+
+   //Debug interface
+   input wire 		i_debug_mode,
+   input wire [31:0] 	i_wb_dbg_adr,
+   input wire [31:0] 	i_wb_dbg_dat,
+   input wire [3:0] 	i_wb_dbg_sel,
+   input wire 		i_wb_dbg_we ,
+   input wire 		i_wb_dbg_stb,
+   output wire [31:0] 	o_wb_dbg_rdt,
+   output wire 		o_wb_dbg_ack,
+
+   //Periperal interface
    output wire [31:0] 	o_wb_adr,
    output wire [31:0] 	o_wb_dat,
    output wire [3:0] 	o_wb_sel,
@@ -59,6 +71,14 @@ module subservient_core
    wire 	wb_dbus_stb;
    wire [31:0] 	wb_dbus_rdt;
    wire 	wb_dbus_ack;
+
+   wire [31:0] 	wb_mux_adr;
+   wire [31:0] 	wb_mux_dat;
+   wire [3:0] 	wb_mux_sel;
+   wire 	wb_mux_we;
+   wire 	wb_mux_stb;
+   wire [31:0] 	wb_mux_rdt;
+   wire 	wb_mux_ack;
 
    wire [31:0] 	wb_dmem_adr;
    wire [31:0] 	wb_dmem_dat;
@@ -86,6 +106,33 @@ module subservient_core
    wire [aw-1:0] rf_waddr = ~{{aw-2-5-WITH_CSR{1'b0}},waddr};
    wire [aw-1:0] rf_raddr = ~{{aw-2-5-WITH_CSR{1'b0}},raddr};
 
+   subservient_debug_switch debug_switch
+     (.i_debug_mode (i_debug_mode),
+
+      .i_wb_dbg_adr (i_wb_dbg_adr),
+      .i_wb_dbg_dat (i_wb_dbg_dat),
+      .i_wb_dbg_sel (i_wb_dbg_sel),
+      .i_wb_dbg_we  (i_wb_dbg_we ),
+      .i_wb_dbg_stb (i_wb_dbg_stb),
+      .o_wb_dbg_rdt (o_wb_dbg_rdt),
+      .o_wb_dbg_ack (o_wb_dbg_ack),
+
+      .i_wb_dbus_adr (wb_dbus_adr),
+      .i_wb_dbus_dat (wb_dbus_dat),
+      .i_wb_dbus_sel (wb_dbus_sel),
+      .i_wb_dbus_we  (wb_dbus_we ),
+      .i_wb_dbus_stb (wb_dbus_stb),
+      .o_wb_dbus_rdt (wb_dbus_rdt),
+      .o_wb_dbus_ack (wb_dbus_ack),
+
+      .o_wb_mux_adr (wb_mux_adr),
+      .o_wb_mux_dat (wb_mux_dat),
+      .o_wb_mux_sel (wb_mux_sel),
+      .o_wb_mux_we  (wb_mux_we ),
+      .o_wb_mux_stb (wb_mux_stb),
+      .i_wb_mux_rdt (wb_mux_rdt),
+      .i_wb_mux_ack (wb_mux_ack));
+
    serving_arbiter arbiter
      (.i_wb_cpu_dbus_adr (wb_dmem_adr),
       .i_wb_cpu_dbus_dat (wb_dmem_dat),
@@ -112,13 +159,13 @@ module subservient_core
      (.i_clk        (i_clk),
       .i_rst        (i_rst & (RESET_STRATEGY != "NONE")),
 
-      .i_wb_cpu_adr (wb_dbus_adr),
-      .i_wb_cpu_dat (wb_dbus_dat),
-      .i_wb_cpu_sel (wb_dbus_sel),
-      .i_wb_cpu_we  (wb_dbus_we),
-      .i_wb_cpu_stb (wb_dbus_stb),
-      .o_wb_cpu_rdt (wb_dbus_rdt),
-      .o_wb_cpu_ack (wb_dbus_ack),
+      .i_wb_cpu_adr (wb_mux_adr),
+      .i_wb_cpu_dat (wb_mux_dat),
+      .i_wb_cpu_sel (wb_mux_sel),
+      .i_wb_cpu_we  (wb_mux_we),
+      .i_wb_cpu_stb (wb_mux_stb),
+      .o_wb_cpu_rdt (wb_mux_rdt),
+      .o_wb_cpu_ack (wb_mux_ack),
 
       .o_wb_mem_adr (wb_dmem_adr),
       .o_wb_mem_dat (wb_dmem_dat),

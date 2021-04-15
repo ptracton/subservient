@@ -38,12 +38,24 @@ module subservient_sim
      (// Clock & reset
       .i_clk (i_clk),
       .i_rst (i_rst),
+
       //SRAM interface
       .o_sram_waddr (sram_waddr),
       .o_sram_wdata (sram_wdata),
       .o_sram_wen   (sram_wen),
       .o_sram_raddr (sram_raddr),
       .i_sram_rdata (sram_rdata),
+
+      //Debug interface
+      .i_debug_mode (1'b0),
+      .i_wb_dbg_adr (32'd0),
+      .i_wb_dbg_dat (32'd0),
+      .i_wb_dbg_sel (4'd0),
+      .i_wb_dbg_we  (1'd0),
+      .i_wb_dbg_stb (1'd0),
+      .o_wb_dbg_rdt (),
+      .o_wb_dbg_ack (),
+
       // External I/O
       .o_gpio (o_gpio));
 

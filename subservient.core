@@ -6,6 +6,7 @@ filesets:
   core:
     files:
       - rtl/subservient_ram.v
+      - rtl/subservient_debug_switch.v
       - rtl/subservient_core.v
     file_type : verilogSource
     depend : [serving]
@@ -133,32 +134,3 @@ parameters:
     description : Delay start of VCD dumping until the specified time
     paramtype   : plusarg
 
-generate:
-  icebreaker_pll:
-    generator: icepll
-    parameters:
-      freq_out : 16
-
-  icesugar_pll:
-    generator: icepll
-    parameters:
-      freq_in  : 12
-      freq_out : 32
-
-  tinyfpga_bx_pll:
-    generator: icepll
-    parameters:
-      freq_in  : 16
-      freq_out : 32
-
-  alhambra_pll:
-    generator: icepll
-    parameters:
-      freq_in  : 12
-      freq_out : 32
-
-  icestick_pll:
-    generator: icepll
-    parameters:
-      freq_in  : 12
-      freq_out : 32
