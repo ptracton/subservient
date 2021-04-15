@@ -31,6 +31,19 @@ Subservient comes with a simple testbench that allows running programs on the si
 4. Debug mode is turned off
 5. CPU starts executing from the program written to SRAM
 
+## Getting started
+
+Subservient uses [FuseSoC](https://github.com/olofk/fusesoc) to handle its dependencies and run the SoC through different tool flows.
+
+1. Install FuseSoC `pip3 install fusesoc`
+2. Create an empty workspace directory and enter it `mkdir workspace && cd workspace`
+3. From within your workspace directory add the required FuseSoC libraries
+   - Base library `fusesoc library add fusesoc-cores https://github.com/fusesoc/fusesoc-cores`
+   - SERV `fusesoc library add serv https://github.com/olofk/serv`
+   - Subservient `fusesoc library add subservient https://github.com/olofk/subservient`
+4. FuseSoC should be able to see the subservient SoC. Verify this by running `fusesoc core show subservient`
+5. We can now run a simulation with the simulator we have at hand. `fusesoc run --target=sim --tool=icarus subservient` will launch a simulation using Icarus Verilog. Changing `--tool`to e.g. modelsim will use Modelsim/questasim instead.
+
 TODO:
 - [ ] Test on FPGA
 - [ ] Add OpenRAM
