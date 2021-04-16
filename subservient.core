@@ -47,15 +47,7 @@ targets:
         mode : lint-only
     toplevel : subservient
 
-  nexys_a7:
-    default_tool: vivado
-    filesets : [mem_files, soc, nexys_a7]
-    parameters : [memfile, memsize, frequency=32]
-    tools:
-      vivado: {part : xc7a100tcsg324-1}
-    toplevel : servix
-
-  openlane:
+  sky130:
     default_tool: openlane
     filesets : [core, soc, openlane]
     parameters :
@@ -64,7 +56,6 @@ targets:
     tools:
       openlane:
         interactive_name : interactive.tcl
-#    toplevel : serv_rf_ram_if
     toplevel : subservient
 
   sim:
@@ -79,33 +70,10 @@ targets:
     toplevel : ["tool_verilator? (subservient_sim)", "!tool_verilator? (subservient_tb)"]
 
 parameters:
-  PLL:
-    datatype : str
-    description : PLL type to use for main clock generation
-    paramtype : vlogparam
-
-  RISCV_FORMAL:
-    datatype  : bool
-    paramtype : vlogdefine
-
-  SERV_CLEAR_RAM:
-    datatype  : bool
-    paramtype : vlogdefine
-
   firmware:
     datatype : file
     description : Preload RAM with a hex file at runtime (overrides memfile)
     paramtype : plusarg
-
-  frequency:
-    datatype    : int
-    description : PLL output frequency
-    paramtype   : vlogparam
-
-  memfile:
-    datatype    : file
-    description : Preload RAM with a hex file at compile-time
-    paramtype   : vlogparam
 
   memsize:
     datatype    : int
@@ -113,24 +81,7 @@ parameters:
     description : Memory size in bytes for RAM (default 8kiB)
     paramtype   : vlogparam
 
-  signature:
-    datatype : file
-    paramtype : plusarg
   uart_baudrate:
     datatype : int
     description : Treat q output as an UART with the specified baudrate (0 or omitted parameter disables UART decoding)
     paramtype : plusarg
-
-  timeout:
-    datatype : int
-    paramtype : plusarg
-
-  vcd:
-    datatype : bool
-    paramtype : plusarg
-
-  vcd_start:
-    datatype    : int
-    description : Delay start of VCD dumping until the specified time
-    paramtype   : plusarg
-
