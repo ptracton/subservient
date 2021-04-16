@@ -35,6 +35,7 @@ module subservient_core
    output wire 		o_sram_wen,
    output wire [aw-1:0] o_sram_raddr,
    input wire [7:0] 	i_sram_rdata,
+   output wire 		o_sram_ren,
 
    //Debug interface
    input wire 		i_debug_mode,
@@ -101,6 +102,7 @@ module subservient_core
    wire 	       wen;
    wire [6+WITH_CSR:0] raddr;
    wire [rf_width-1:0] rdata;
+   wire 	       ren;
 
 
    wire [aw-1:0] rf_waddr = ~{{aw-2-5-WITH_CSR{1'b0}},waddr};
@@ -194,12 +196,14 @@ module subservient_core
       .i_wen    (wen),
       .i_raddr  (rf_raddr),
       .o_rdata  (rdata),
+      .i_ren    (ren),
 
       .o_sram_waddr (o_sram_waddr),
       .o_sram_wdata (o_sram_wdata),
       .o_sram_wen   (o_sram_wen), 
       .o_sram_raddr (o_sram_raddr),
       .i_sram_rdata (i_sram_rdata),
+      .o_sram_ren   (o_sram_ren), 
    
       .i_wb_adr (wb_mem_adr[$clog2(memsize)-1:2]),
       .i_wb_stb (wb_mem_stb),
@@ -250,7 +254,8 @@ module subservient_core
       .o_wdata  (wdata),
       .o_wen    (wen),
       .o_raddr  (raddr),
-      .i_rdata  (rdata));
+      .i_rdata  (rdata),
+      .o_ren    (ren));
 
    serv_top
      #(.RESET_PC (32'h0000_0000),

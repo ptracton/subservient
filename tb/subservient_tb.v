@@ -14,6 +14,7 @@ module subservient_tb;
    wire 	 sram_wen;
    wire [aw-1:0] sram_raddr;
    wire [7:0] 	 sram_rdata;
+   wire 	 sram_ren;
 
    //Debug interface
    reg 		 debug_mode;
@@ -125,19 +126,19 @@ module subservient_tb;
    
    sky130_sram_1kbyte_1rw1r_32x256_8
      #(// FIXME: This delay is arbitrary.
-       .DELAY (0),
+       .DELAY (3),
        .VERBOSE (0))
    sram
      (
       .clk0   (clk),
-      .csb0   (1'b0),
+      .csb0   (!sram_wen),
       .web0   (!sram_wen),
       .wmask0 (wmask0),
       .addr0  (waddr0),
       .din0   (din0),
       .dout0  (),
       .clk1   (clk),
-      .csb1   (sram_wen),
+      .csb1   (!sram_ren),
       .addr1  (addr1),
       .dout1  (dout1));
 
@@ -165,6 +166,7 @@ module subservient_tb;
       .o_sram_wen   (sram_wen),
       .o_sram_raddr (sram_raddr),
       .i_sram_rdata (sram_rdata),
+      .o_sram_ren   (sram_ren),
 
       //Debug interface
       .i_debug_mode (debug_mode),

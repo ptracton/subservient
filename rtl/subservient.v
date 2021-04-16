@@ -32,6 +32,7 @@ module subservient
    output wire 		o_sram_wen,
    output wire [aw-1:0] o_sram_raddr,
    input wire [7:0] 	i_sram_rdata,
+   output wire 		o_sram_ren,
 
    //Debug interface
    input wire 		i_debug_mode,
@@ -83,6 +84,7 @@ module subservient
       .o_sram_wen   (o_sram_wen),
       .o_sram_raddr (o_sram_raddr),
       .i_sram_rdata (i_sram_rdata),
+      .o_sram_ren   (o_sram_ren),
 
       //Debug interface
       .i_debug_mode (i_debug_mode),

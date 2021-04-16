@@ -29,12 +29,14 @@ module subservient_ram
     input wire 		 i_wen,
     input wire [aw-1:0]  i_raddr,
     output wire [7:0] 	 o_rdata,
+    input wire 		 i_ren,
 
     output wire [aw-1:0] o_sram_waddr,
     output wire [7:0] 	 o_sram_wdata,
     output wire 	 o_sram_wen,
     output wire [aw-1:0] o_sram_raddr,
     input wire [7:0] 	 i_sram_rdata,
+    output wire 	 o_sram_ren,
 
     input wire [aw-1:2]  i_wb_adr,
     input wire [31:0] 	 i_wb_dat,
@@ -54,6 +56,7 @@ module subservient_ram
    assign o_sram_wdata = wb_en ? i_wb_dat[bsel*8+:8]     : i_wdata;
    assign o_sram_wen   = wb_en ? wb_we : i_wen;
    assign o_sram_raddr = wb_en ? {i_wb_adr[aw-1:2],bsel} : i_raddr;
+   assign o_sram_ren   = wb_en ? !i_wb_we : i_ren;
 
    reg [23:0] 		wb_rdt;
    assign o_wb_rdt = {i_sram_rdata, wb_rdt};
