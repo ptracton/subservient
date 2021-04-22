@@ -22,11 +22,13 @@ module subservient_sim
    wire 	 sram_wen;
    wire [aw-1:0] sram_raddr;
    reg [7:0] 	 sram_rdata;
+   wire 	 sram_ren;
 
    reg [7:0] 	 mem [0:memsize-1];
 
    always @(posedge i_clk) begin
-      sram_rdata <= mem[sram_raddr];
+      if (sram_ren)
+	sram_rdata <= mem[sram_raddr];
       if (sram_wen)
 	mem[sram_waddr] <= sram_wdata;
    end
@@ -45,6 +47,7 @@ module subservient_sim
       .o_sram_wen   (sram_wen),
       .o_sram_raddr (sram_raddr),
       .i_sram_rdata (sram_rdata),
+      .o_sram_ren   (sram_ren),
 
       //Debug interface
       .i_debug_mode (1'b0),
