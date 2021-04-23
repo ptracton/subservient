@@ -113,7 +113,6 @@ module subservient_tb;
    reg [1:0] sram_bsel;
    always @(posedge clk) begin
       sram_bsel  <= sram_raddr[1:0];
-      //sram_rdata <= dout1[sram_bsel*8+:8]; //Pick the right byte from the read data
    end
 
    wire [3:0] wmask0 = 4'd1 << sram_waddr[1:0];
@@ -142,15 +141,14 @@ module subservient_tb;
       .addr1  (addr1),
       .dout1  (dout1));
 
-/*
-   reg [7:0] 	 sram [0:memsize-1];
-
+   reg 	       reg_read;
+   /* RAM monitor */
    always @(posedge clk) begin
-      sram_rdata <= sram[sram_raddr];
-      if (sram_wen)
-	sram[sram_waddr] <= sram_wdata;
+      reg_read <= sram_ren & addr1[7] & (sram_raddr[1:0] == 2'b00) & !(&addr1);
+
+      if (reg_read)
+	$display("Read %08x from %08x", dout1, ~(addr1[6:2]));
    end
-*/ 
 
    subservient
      #(.memsize  (memsize),

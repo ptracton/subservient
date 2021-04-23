@@ -46,6 +46,5 @@ Subservient uses [FuseSoC](https://github.com/olofk/fusesoc) to handle its depen
 
 TODO:
 - [ ] Test on FPGA
-- [ ] Add OpenRAM
 - [ ] Add support for loading the SRAM externally (over Wishbone from Caravel)
 - [ ] Gate-level simulations
